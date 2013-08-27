@@ -1,0 +1,12 @@
+src/openni2_camera/
+src/openni2_launch/
+src/publish_pc/
+src/robot_setup_tf/
+src/sdk-examples/
+build/
+devel/
+src/drogon_interface/.svn/
+src/drogon_interface/CMakeLists.txt~
+src/drogon_interface/include/.svn/
+src/drogon_interface/package.xml~
+src/drogon_interface/src/.svn/
