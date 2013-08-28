@@ -27,12 +27,6 @@
 #include <baxter_msgs/JointVelocities.h>
 #include <baxter_msgs/EndpointState.h>
 #include <baxter_msgs/SolvePositionIK.h>
-//#include <drogon_interface/GripperCommand.h>	//Headers for messages copied from Baxter RSDK
-//#include <drogon_interface/JointCommandMode.h>
-//#include <drogon_interface/JointPositions.h>
-//#include <drogon_interface/JointVelocities.h>
-//#include <drogon_interface/EndpointState.h>
-//#include <drogon_interface/SolvePositionIK.h>	//Header for service copied from Baxter RSDK#include <ros/callback_queue.h>
 
 using namespace std;
 
