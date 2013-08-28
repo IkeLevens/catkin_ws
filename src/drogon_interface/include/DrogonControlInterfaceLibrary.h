@@ -108,13 +108,13 @@ class DrogonControlInterface
 	// kinematic solver for the right endpoint
 	
 	//objects from MoveIt!
-	robot_model_loader::RobotModelLoader robot_model_loader;
-	robot_model::RobotModelPtr kinematic_model
-	robot_state::RobotStatePtr kinematic_state
+	robot_model_loader::RobotModelLoader loader;
+	robot_model::RobotModelPtr model;
+	robot_state::RobotStatePtr state;
 
 	// JointStateGroups for use in moveit function calls
-	robot_state::JointStateGroup leftArmGroup;
-	robot_state::JointStateGroup rightArmGroup;
+	robot_state::JointStateGroup* leftArmGroup;
+	robot_state::JointStateGroup* rightArmGroup;
 
 	void setupRobotModel(); // sets up robot model for use in moveit function calls
 	void verifyGoalLimits(map<string, double>& goal); // verifies that a goal state's
@@ -157,7 +157,7 @@ class DrogonControlInterface
 	bool getRSDKIKSolution (int arm, geometry_msgs::Pose pose, map<string, double> &out); // this
 	// retrieves an inverse kinematic solution for a pose of an arm's end effector using the
 	// RSDK's built in ik solver
-	bool getIKSolution (int arm, Eigen::Affine3d input, robot_state::JointStateGroup* output);
+	bool getIKSolution (int arm, Eigen::Affine3d input, map<string, double> &output);
 	// this retrieves an inverse kinematic solution for a pose of an arm's end effector using
 	// moveit's kdl ik solver	
 	geometry_msgs::Pose getPose(int arm); // this returns the current pose of an end effector

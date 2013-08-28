@@ -15,12 +15,18 @@
 #include <unistd.h>
 #include <sstream>			//For sending topic messages in ROS
 #include <ros/ros.h>		//Headers for ros
+
+#include <moveit/robot_model_loader/robot_model_loader.h>	//moveIt! includes
+#include <moveit/robot_model/robot_model.h>
+#include <moveit/robot_state/robot_state.h>
+#include <moveit/robot_state/joint_state_group.h>
+
 #include <std_msgs/Header.h>//Headers for ros message classes
 #include <std_msgs/Empty.h>
 #include <std_msgs/Bool.h>
 #include <std_msgs/UInt16.h>
 #include <sensor_msgs/JointState.h>				//Headers for reading joint positions
-#include <baxter_msgs/GripperCommand.h>		//Headers for messages in Baxter RSDK
+#include <baxter_msgs/GripperCommand.h>			//Headers for messages in Baxter RSDK
 #include <baxter_msgs/JointCommandMode.h>
 #include <baxter_msgs/JointPositions.h>
 #include <baxter_msgs/JointVelocities.h>
@@ -191,14 +197,14 @@ ros::Publisher DrogonControlInterface::getVelocityPublisher(int arm, ros::NodeHa
 	}
 	return pub;
 }
-void setupRobotModel()
+void DrogonControlInterface::setupRobotModel()
 {
-	robot_model_loader("robot_description");
-	kinematic_model = robot_model_loader.getModel();
-	kinematic_state(new robot_state::RobotState(kinematic_model));
-	kinematic_state->setToDefaultValues();
-	leftArmGroup = kinematic_state->getJointStateGroup("left_arm");
-	rightArmGroup = kinematic_state->getJointStateGroup("right_arm");
+	loader = robot_model_loader::RobotModelLoader("robot_description");
+	model = loader.getModel();
+	state(new robot_state::RobotState(model));
+	state->setToDefaultValues();
+	leftArmGroup = state->getJointStateGroup("left_arm");
+	rightArmGroup = state->getJointStateGroup("right_arm");
 }
 void DrogonControlInterface::rosEnable()
 {
@@ -219,12 +225,12 @@ bool DrogonControlInterface::getIKSolution (int arm, Eigen::Affine3d input, map<
 	bool found_ik = armGroup->setFromIK(input, 10, 0.1);
 	if (found_ik) {
 		vector<double> joint_values;
-		joint_state_group->getVariableValues(joint_values);
-		for (size_t i=0; i < joint_names.size(); ++i) {
-			output[jointnames[i]] = joint_values[i];
+		armGroup->getVariableValues(joint_values);
+		for (size_t i=0; i < sizeof jointNames; ++i) {
+			output[jointNames[i]] = joint_values[i];
 		}
 	}
-	return fount_ik;
+	return found_ik;
 }
 bool DrogonControlInterface::getRSDKIKSolution (int arm, geometry_msgs::Pose pose, map<string, double> &out)
 {
