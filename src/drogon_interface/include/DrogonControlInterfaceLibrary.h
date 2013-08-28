@@ -106,7 +106,17 @@ class DrogonControlInterface
 	// kinematic solver for the left endpoint
 	ros::ServiceClient ikRightClient; // service client for Baxter RSDK's built in inverse
 	// kinematic solver for the right endpoint
+	
+	//objects from MoveIt!
+	robot_model_loader::RobotModelLoader robot_model_loader;
+	robot_model::RobotModelPtr kinematic_model
+	robot_state::RobotStatePtr kinematic_state
 
+	// JointStateGroups for use in moveit function calls
+	robot_state::JointStateGroup leftArmGroup;
+	robot_state::JointStateGroup rightArmGroup;
+
+	void setupRobotModel(); // sets up robot model for use in moveit function calls
 	void verifyGoalLimits(map<string, double>& goal); // verifies that a goal state's
 	// joint angles are within the joint angle limits
 	bool closeEnough (map<string, double>& goal, map<string, double>& state); // determines
@@ -144,9 +154,12 @@ class DrogonControlInterface
 	// to velocity mode
 	map<string, double> getJointStates(int arm); // this method returns a map of the current
 	// angles of the baxter research robot
-	bool getIKSolution (int arm, geometry_msgs::Pose pose, map<string, double> &out); // this
+	bool getRSDKIKSolution (int arm, geometry_msgs::Pose pose, map<string, double> &out); // this
 	// retrieves an inverse kinematic solution for a pose of an arm's end effector using the
 	// RSDK's built in ik solver
+	bool getIKSolution (int arm, Eigen::Affine3d input, robot_state::JointStateGroup* output);
+	// this retrieves an inverse kinematic solution for a pose of an arm's end effector using
+	// moveit's kdl ik solver	
 	geometry_msgs::Pose getPose(int arm); // this returns the current pose of an end effector
 	Position getPosition(int arm); // this returns the position object being used to maintain the
 	// cartesian location of an end effector

@@ -13,7 +13,6 @@
 #include <unistd.h>			//_getch*/
 #include <termios.h>		//_getch*/
 #include <unistd.h>
-//#include <roscpp>			//ROS C++ API
 #include <sstream>			//For sending topic messages in ROS
 #include <ros/ros.h>		//Headers for ros
 #include <std_msgs/Header.h>//Headers for ros message classes
@@ -101,6 +100,7 @@ DrogonControlInterface::DrogonControlInterface()
 	}
 	ros::AsyncSpinner spinner(2);
 	spinner.start();
+	setupRobotModel();
 }
 ros::ServiceClient DrogonControlInterface::getIKServiceClient(int arm, ros::NodeHandle& n)
 {
@@ -191,6 +191,15 @@ ros::Publisher DrogonControlInterface::getVelocityPublisher(int arm, ros::NodeHa
 	}
 	return pub;
 }
+void setupRobotModel()
+{
+	robot_model_loader("robot_description");
+	kinematic_model = robot_model_loader.getModel();
+	kinematic_state(new robot_state::RobotState(kinematic_model));
+	kinematic_state->setToDefaultValues();
+	leftArmGroup = kinematic_state->getJointStateGroup("left_arm");
+	rightArmGroup = kinematic_state->getJointStateGroup("right_arm");
+}
 void DrogonControlInterface::rosEnable()
 {
 	system("rosrun tools enable_robot.py -e");
@@ -199,8 +208,25 @@ void DrogonControlInterface::rosDisable()
 {
 	system("rosrun tools enable_robot.py -d");
 }
-
-bool DrogonControlInterface::getIKSolution (int arm, geometry_msgs::Pose pose, map<string, double> &out)
+bool DrogonControlInterface::getIKSolution (int arm, Eigen::Affine3d input, map<string, double> &output)
+{
+	robot_state::JointStateGroup* armGroup;
+	if (arm == LEFT) {
+		armGroup = leftArmGroup;
+	} else {
+		armGroup = rightArmGroup;
+	}
+	bool found_ik = armGroup->setFromIK(input, 10, 0.1);
+	if (found_ik) {
+		vector<double> joint_values;
+		joint_state_group->getVariableValues(joint_values);
+		for (size_t i=0; i < joint_names.size(); ++i) {
+			output[jointnames[i]] = joint_values[i];
+		}
+	}
+	return fount_ik;
+}
+bool DrogonControlInterface::getRSDKIKSolution (int arm, geometry_msgs::Pose pose, map<string, double> &out)
 {
 	geometry_msgs::PoseStamped stamped;
 	std_msgs::Header hdr;
