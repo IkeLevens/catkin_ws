@@ -1,3 +1,9 @@
+/*
+ * File: DrogonControlInterfaceLibrary.h
+ * Author: Isaac Yochelson
+ *
+ * created on June 24, 2013
+ */
 #include <cstdlib>			//standard library for C/C++
 #include <iostream>			//input and output stream packages
 #include <string>			//character string class
@@ -26,7 +32,6 @@
 #include <baxter_msgs/JointVelocities.h>
 #include <baxter_msgs/EndpointState.h>
 #include <baxter_msgs/SolvePositionIK.h>	//Header for service from Baxter RSDK
-//#include <ros/callback_queue.h>
 using namespace std;
 #ifndef DROGON_INTERFACE_LIBRARY
 #define DROGON_INTERFACE_LIBRARY
@@ -157,7 +162,7 @@ class DrogonControlInterface
 	bool getRSDKIKSolution (int arm, geometry_msgs::Pose pose, map<string, double> &out); // this
 	// retrieves an inverse kinematic solution for a pose of an arm's end effector using the
 	// RSDK's built in ik solver
-	bool getIKSolution (int arm, Eigen::Affine3d input, map<string, double> &output);
+	bool getIKSolution (int arm, geometry_msgs::Pose input, map<string, double> &output);
 	// this retrieves an inverse kinematic solution for a pose of an arm's end effector using
 	// moveit's kdl ik solver	
 	geometry_msgs::Pose getPose(int arm); // this returns the current pose of an end effector

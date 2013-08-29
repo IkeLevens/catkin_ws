@@ -15,6 +15,8 @@
 #include <unistd.h>
 #include <sstream>			//For sending topic messages in ROS
 #include <ros/ros.h>		//Headers for ros
+#include <tf/tf.h>
+#include <eigen_conversions/eigen_msg.h>
 
 #include <moveit/robot_model_loader/robot_model_loader.h>	//moveIt! includes
 #include <moveit/robot_model/robot_model.h>
@@ -215,15 +217,17 @@ void DrogonControlInterface::rosDisable()
 {
 	system("rosrun tools enable_robot.py -d");
 }
-bool DrogonControlInterface::getIKSolution (int arm, Eigen::Affine3d input, map<string, double> &output)
+bool DrogonControlInterface::getIKSolution (int arm, geometry_msgs::Pose input, map<string, double> &output)
 {
+	Eigen::Affine3d endpoint;
+	tf::poseMsgToEigen(input, endpoint);
 	robot_state::JointStateGroup* armGroup;
 	if (arm == LEFT) {
 		armGroup = leftArmGroup;
 	} else {
 		armGroup = rightArmGroup;
 	}
-	bool found_ik = armGroup->setFromIK(input, 10, 0.1);
+	bool found_ik = armGroup->setFromIK(endpoint, 10, 0.1);
 	if (found_ik) {
 		vector<double> joint_values;
 		armGroup->getVariableValues(joint_values);
