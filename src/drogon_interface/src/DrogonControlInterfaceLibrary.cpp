@@ -201,7 +201,8 @@ void DrogonControlInterface::setupRobotModel()
 {
 	loader = robot_model_loader::RobotModelLoader("robot_description");
 	model = loader.getModel();
-	state(new robot_state::RobotState(model));
+	robot_state::RobotStatePtr tempState(new robot_state::RobotState(model));
+	state = tempState;
 	state->setToDefaultValues();
 	leftArmGroup = state->getJointStateGroup("left_arm");
 	rightArmGroup = state->getJointStateGroup("right_arm");
