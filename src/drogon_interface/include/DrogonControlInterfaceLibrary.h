@@ -32,9 +32,10 @@
 #include <baxter_msgs/JointVelocities.h>
 #include <baxter_msgs/EndpointState.h>
 #include <baxter_msgs/SolvePositionIK.h>	//Header for service from Baxter RSDK
-using namespace std;
 #ifndef DROGON_INTERFACE_LIBRARY
 #define DROGON_INTERFACE_LIBRARY
+using namespace std;
+namespace drogon {
 const int LEFT = 0;
 const int RIGHT = 1;
 const int OPEN = 2;
@@ -49,6 +50,9 @@ const string jointNames [] = {
 	"w1",
 	"w2"
 };
+const int JOINTS = 7;
+}
+using namespace drogon;
 // This class is used to keep a joint state listener on an arm
 class State
 {

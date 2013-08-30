@@ -7,10 +7,8 @@
 		<arg name="allow_trajectory_execution" value="false"/>
 	</include>
 
-	<node name="keyboard_control" pkg="drogon_interface" type="drogon_interface_node" respawn="false" output="screen"> 
-		<rosparam command="load" file="$(find baxter_moveit_config)/config/kinematics.yaml"/>
-	</node>
+	<rosparam command="load" file="$(find baxter_moveit_config)/config/kinematics.yaml"/>
 
-	<node name="kinematics" pkg="drogon_interface" type="kinematics_test" respawn="false" output="screen"/>
+	<node name="keyboard_control" pkg="drogon_interface" type="drogon_interface_node" respawn="false" output="screen"/>
 
 </launch>

@@ -1,6 +1,6 @@
 /* 
  * File:   DrogonControlInterfaceLibrary.cpp
- * Author: pracsys
+ * Author: Isaac Yochelson
  *
  * Created on June 24, 2013, 10:08 AM
  */
@@ -36,6 +36,7 @@
 #include <baxter_msgs/SolvePositionIK.h>
 
 using namespace std;
+using namespace drogon;
 
 Limits::Limits()
 {  
@@ -227,11 +228,14 @@ bool DrogonControlInterface::getIKSolution (int arm, geometry_msgs::Pose input, 
 	} else {
 		armGroup = rightArmGroup;
 	}
+	printf("armgroup set\n");
 	bool found_ik = armGroup->setFromIK(endpoint, 10, 0.1);
 	if (found_ik) {
+		printf("found ik solution\n");
 		vector<double> joint_values;
 		armGroup->getVariableValues(joint_values);
-		for (size_t i=0; i < sizeof jointNames; ++i) {
+		printf("got variable values\n");
+		for (int i=0; i < JOINTS; ++i) {
 			output[jointNames[i]] = joint_values[i];
 		}
 	}

@@ -1,6 +1,6 @@
 /* 
  * File:   DrogonControlInterfaceKeyboard.cpp
- * Author: pracsys
+ * Author: Isaac Yochelson
  *
  * Created on June 24, 2013 12:17 PM
  */
@@ -34,7 +34,8 @@ char getch();
 void mainKeyboardLoop();
 DrogonControlInterface* dci;
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
 	ros::init(argc, argv, "Drogon_Keyboard_Node");
 	dci = new DrogonControlInterface();
 	dci->rosEnable();
